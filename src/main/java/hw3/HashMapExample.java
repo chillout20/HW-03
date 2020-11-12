@@ -1,8 +1,5 @@
 package hw3;
 
-import java.util.Iterator;
-import java.util.Map;
-
 public class HashMapExample
 {
     public static void main(String[] args)

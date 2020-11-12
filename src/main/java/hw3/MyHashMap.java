@@ -64,26 +64,14 @@ public class MyHashMap<K, V> implements Map<K, V> {
 
     @Override
     public boolean containsValue(Object value) {
-        for (int i=0; i < bucketSize; i++) {
-            if (buckets[i].size() == 0) continue;
-            for (Pair<K, V> pair: buckets[i]){
-                if (pair.value.equals(value)) return true;
+        for (LinkedList<Pair<K, V>> ls : buckets) {
+            if (ls.size() == 0) continue;
+            for (Pair<K, V> pair: ls){
+                if (pair.key.equals(value)) return true;
             }
         }
         return false;
     }
-
-    // Could you please let me know why this doesn't work?
-
-    //public boolean containsValue(Object value) {
-    //    for (LinkedList lls : buckets) {
-    //        if (lls.size() == 0) continue;
-    //        for (Pair<K, V> pair: lls){
-    //            if (pair.key.equals(value)) return true;
-    //        }
-    //    }
-    //    return false;
-    //}
 
     @Override
     public V get(Object key) {
@@ -120,8 +108,7 @@ public class MyHashMap<K, V> implements Map<K, V> {
 
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
-        Set<? extends Entry<? extends K, ? extends V>> entrySet = m.entrySet();
-        for (Entry<? extends K, ? extends V> entry : entrySet) {
+        for (Map.Entry<? extends K, ? extends V> entry : m.entrySet()) {
             put((K) entry.getKey(), (V) entry.getValue());
         }
     }
