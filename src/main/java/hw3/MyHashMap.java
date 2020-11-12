@@ -1,5 +1,3 @@
-package space.harbour.java.hw3;
-
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
