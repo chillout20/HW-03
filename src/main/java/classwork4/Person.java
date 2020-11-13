@@ -46,9 +46,7 @@ public class Person implements Jsonable {
     }
 
     @Override
-    public JsonObject fromJsonString(String hiddenClass)
-    {
-        return null;
+    public void fromJson(String hiddenClass) {
     }
 
     public static void main(String[] args) {

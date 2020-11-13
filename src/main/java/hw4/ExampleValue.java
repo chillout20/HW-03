@@ -28,11 +28,12 @@ public class ExampleValue implements Jsonable {
         }
 
         @Override
-        public JsonObject fromJsonString(String hiddenClass) {
+        public void fromJson(String hiddenClass) {
             JsonReader jsonReader = Json.createReader(new StringReader(hiddenClass));
             JsonObject object = jsonReader.readObject();
             jsonReader.close();
-            return object;
+            this.s = object.getString("s");
+            this.i = object.getInt("i");
         }
     }
 
@@ -47,15 +48,6 @@ public class ExampleValue implements Jsonable {
     }
 
     @Override
-    public JsonObject fromJsonString(String hiddenClass) {
-        JsonReader jsonReader = Json.createReader(new StringReader(hiddenClass));
-        JsonObject object = jsonReader.readObject();
-        jsonReader.close();
-        return object;
-    }
-
-
-    @Override
     public String toJsonString() {
         return toJsonObject().toString();
     }
@@ -68,7 +60,7 @@ public class ExampleValue implements Jsonable {
         this.f = (float) jObject.getJsonNumber("f").doubleValue();
 
         this.hiddenClass = new InsideClass();
-        this.hiddenClass.fromJsonString(jObject.getJsonObject("hiddenClass").toString());
+        this.hiddenClass.fromJson(jObject.getJsonObject("hiddenClass").toString());
     }
 
     public static void main(String... args) {

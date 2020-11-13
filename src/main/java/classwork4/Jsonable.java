@@ -7,7 +7,6 @@ public interface Jsonable {
     public String toJsonString();
     public JsonObject toJsonObject();
 
-
-    public JsonObject fromJsonString(String hiddenClass);
+    public void  fromJson(String jsonString);
     //public String fromJsonObject();
 }
