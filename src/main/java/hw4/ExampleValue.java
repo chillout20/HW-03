@@ -1,8 +1,8 @@
 package hw4;
 
-import javax.json.*;
 import java.io.StringReader;
 import classwork4.Jsonable;
+import javax.json.*;
 
 public class ExampleValue implements Jsonable {
     public Integer i = 10;
