@@ -1,5 +1,7 @@
-import java.util.Scanner;
+package hw1;
+
 import java.io.*;
+import java.util.Scanner;
 
 public class Homework1 {
 
@@ -22,18 +24,18 @@ public class Homework1 {
             writer.write(new Integer(number).toString());
             writer.close();
         } catch (IOException ex) {
-
+            System.out.println("No files found");
         }
     }
 
 
     public static void main(String[] args) {
-            int[] vals = readFile();
-            if (vals != null) {
-                long mult = vals[0] * vals[1];
-                writeFile((int) mult);
-            } else {
-                System.out.println("No input file");
-            }
+        int[] vals = readFile();
+        if (vals != null) {
+            long mult = vals[0] * vals[1];
+            writeFile((int) mult);
+        } else {
+            System.out.println("No input file");
+        }
     }
 }

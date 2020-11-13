@@ -1,9 +1,7 @@
 package hw3;
 
-public class HashMapExample
-{
-    public static void main(String[] args)
-    {
+public class HashMapExample {
+    public static void main(String[] args) {
         MyHashMap<String, String> map = new MyHashMap<>();
         map.put("Vasilii", "012345");
         map.put("Duc", "0123456789");
@@ -12,6 +10,5 @@ public class HashMapExample
         mapTest.putAll(map);
         //mapTest.get("Duc");
         if (mapTest.isEmpty()) System.out.println("Empty");
-
     }
 }

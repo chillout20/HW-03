@@ -1,15 +1,18 @@
+package hw2;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class Slang{
-    static String fixAbbreviations(String sentence){
+public class Slang {
+    static String fixAbbreviations(String sentence) {
         sentence = sentence.replace("PLZ", "please");
         sentence = sentence.replace("FYI", "for your information");
         sentence = sentence.replace("GTFO", "please, leave me alone");
         sentence = sentence.replace("ASAP", "as soon as possible");
         return sentence;
     }
+
     static String fixSmiles(String sentence){
         sentence = sentence.replace(":)", "[smiling]");
         sentence = sentence.replace(":(", "[sad]");
