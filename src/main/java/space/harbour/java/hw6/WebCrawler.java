@@ -6,27 +6,32 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class WebCrawler {
-    static volatile ConcurrentLinkedQueue<URL> toVisit = new ConcurrentLinkedQueue<>();
-    static volatile CopyOnWriteArraySet<URL> alreadyVisited = new CopyOnWriteArraySet<>();
+    static LinkedList<URL> toVisit = new LinkedList<>();
+    static Set<URL> alreadyVisited = new HashSet<>();
 
-    public static class UrlVisitor implements Runnable {
+    public static class UrlVisitor implements Callable<ArrayList<URL>> {
+        final URL url;
+
+        public UrlVisitor(URL url) {
+            this.url = url;
+        }
+
         public static String getContentOfWebPage(URL url) {
-
             final StringBuilder content = new StringBuilder();
 
             try (InputStream is = url.openConnection().getInputStream();
-                 InputStreamReader in = new InputStreamReader(is,"UTF-8");
-                 BufferedReader br = new BufferedReader(in);) {
+                 InputStreamReader in = new InputStreamReader(is, "UTF-8");
+                 BufferedReader br = new BufferedReader(in); ) {
                 String inputLine;
                 while ((inputLine = br.readLine()) != null)
                     content.append(inputLine);
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 System.out.println("Failed to retrieve content of " + url.toString());
                 e.printStackTrace();
             }
@@ -35,48 +40,58 @@ public class WebCrawler {
         }
 
         @Override
-        public void run() {
-            while (!toVisit.isEmpty()) {
-                // get a URL from the head of toVisit queue
-                URL url = toVisit.poll();
-                // mark it as visited by adding to alreadyVisited set
-                alreadyVisited.add(url);
+        public ArrayList<URL> call() {
+            // get content of the web page
+            String content = getContentOfWebPage(url);
 
-                // get content of the web page
-                String content = getContentOfWebPage(url);
-                System.out.println(Thread.currentThread().getName() + " is visiting " + url);
+            String regex = "\\b(https?|http)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]" + "*[-a-zA-Z0-9+&@#/%=~_|]";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(content);
 
-                String regex = "\\b(https?|http)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]" + "*[-a-zA-Z0-9+&@#/%=~_|]";
-                Pattern pattern = Pattern.compile(regex);
-                Matcher matcher = pattern.matcher(content);
+            // get URLs from the content
+            ArrayList<URL> urls = new ArrayList<>();
 
-                while (matcher.find()) {
-                    synchronized (new UrlVisitor()) {
-                        try {
-                            URL newUrl = new URL(matcher.group());
-                            if (!alreadyVisited.contains(newUrl) && !toVisit.contains(newUrl)) {
-                                toVisit.add(newUrl);
-                            }
-                        }
-                        catch (MalformedURLException e) {
-                            e.printStackTrace();
-                        }
-                    }
+            while (matcher.find()) {
+                try {
+                    URL newUrl = new URL(matcher.group());
+                    urls.add(newUrl);
+                    System.out.println(newUrl);
+                }
+                catch (MalformedURLException e) {
+                    e.printStackTrace();
                 }
             }
+            for (URL newUrl: urls) {
+                if (!alreadyVisited.contains(newUrl) && !toVisit.contains(newUrl)) {
+                    toVisit.add(newUrl);
+                }
+            }
+
+            return urls;
         }
     }
 
-    public static void main(String[] args) throws MalformedURLException {
-        final int nThread = 5;
+    public static void main(String[] args) throws MalformedURLException, ExecutionException, InterruptedException {
         toVisit.add(new URL("https://chillout20.github.io/chillout20-github-page/"));
-        ExecutorService executorService = Executors.newFixedThreadPool(nThread);
 
-        UrlVisitor[] crawlers = new UrlVisitor[nThread];
+        List<Future<ArrayList<URL>>> results = new LinkedList<>();
 
-        for (int i = 0; i < nThread; i++) {
-            crawlers[i] = new UrlVisitor();
-            executorService.execute(crawlers[i]);
+        ExecutorService executorService = Executors.newFixedThreadPool(5);
+        boolean allThreadAreDone = false;
+        while (!toVisit.isEmpty() || !allThreadAreDone) {
+            allThreadAreDone = true;
+            // get a URL from the head of toVisit queue
+            URL url = toVisit.poll();
+            System.out.println(Thread.currentThread().getName() + " is visiting " + url);
+            // mark it as visited by adding to alreadyVisited set
+            alreadyVisited.add(url);
+            results.add(executorService.submit(new UrlVisitor(url)));
+
+            for (Future<ArrayList<URL>> result: results) {
+                if (result.isDone()) {
+                    results.add(executorService.submit(new UrlVisitor(url)));
+                } else allThreadAreDone = false;
+            }
         }
     }
 }
