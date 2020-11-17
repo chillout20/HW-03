@@ -11,8 +11,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class WebCrawler {
-    static ConcurrentLinkedQueue<URL> toVisit = new ConcurrentLinkedQueue<>();
-    static CopyOnWriteArraySet<URL> alreadyVisited = new CopyOnWriteArraySet<>();
+    static volatile ConcurrentLinkedQueue<URL> toVisit = new ConcurrentLinkedQueue<>();
+    static volatile CopyOnWriteArraySet<URL> alreadyVisited = new CopyOnWriteArraySet<>();
 
     public static class UrlVisitor implements Runnable {
         public static String getContentOfWebPage(URL url) {
@@ -51,7 +51,7 @@ public class WebCrawler {
                 Matcher matcher = pattern.matcher(content);
 
                 while (matcher.find()) {
-                    synchronized (toVisit) {
+                    synchronized (new UrlVisitor()) {
                         try {
                             URL newUrl = new URL(matcher.group());
                             if (!alreadyVisited.contains(newUrl) && !toVisit.contains(newUrl)) {
@@ -79,5 +79,4 @@ public class WebCrawler {
             executorService.execute(crawlers[i]);
         }
     }
-
 }
