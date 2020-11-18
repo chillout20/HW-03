@@ -38,6 +38,3 @@ checkstyleMain {
 checkstyleTest {
     source ='src/test/java'
 }
-test {
-    useJUnitPlatform()
-}

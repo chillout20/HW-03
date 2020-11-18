@@ -37,6 +37,7 @@ public class Movies {
     public static class Actor {
         String name;
         String as;
+
         public String getActorName() {
             return this.name;
         }
@@ -135,6 +136,7 @@ public class Movies {
             }
         }
     }
+
     public List<Movies> sortByReleaseYear(List<Movies> moviesList) {
         System.out.println("Sorting by release year:");
         moviesList.sort(Comparator.comparingInt((Movies o) -> o.year));
@@ -145,14 +147,16 @@ public class Movies {
     public List<Movies> sortByRuntime(List<Movies> moviesList) {
         System.out.println("Sorting by runtime:");
         moviesList.sort(Comparator.comparingInt((Movies o) -> o.runtime));
-        moviesList.forEach(x -> System.out.println("Title: " + x.title + ", Runtime: " + x.runtime));
+        moviesList.forEach(x -> System.out.println("Title: " + x.title
+                + ", Runtime: " + x.runtime));
         return moviesList;
     }
 
     public List<Movies> sortByAward(List<Movies> moviesList) {
         System.out.println("Sorting by length of award:");
         moviesList.sort(Comparator.comparingInt((Movies o) -> o.awards.length()));
-        moviesList.forEach(x -> System.out.println("Title: " + x.title + ", Award (length): " + x.awards.length()));
+        moviesList.forEach(x -> System.out.println("Title: " + x.title
+                + ", Award (length): " + x.awards.length()));
         return moviesList;
     }
 
@@ -163,20 +167,23 @@ public class Movies {
                 .collect(Collectors.toList());
 
         filteredMovieList
-                .forEach(x -> System.out.println("Title: " + x.title + ", Director: " + x.director.name));
+                .forEach(x -> System.out.println("Title: " + x.title
+                        + ", Director: " + x.director.name));
         return filteredMovieList;
 
     }
 
-
     public List<Movies> filterByActor(List<Movies> movieList, String inputActor) {
         System.out.println("Filtering movies with actor " + inputActor + ":");
         List<Movies> filteredMovieList = movieList.stream()
-                .filter(x -> {for (Actor actor : x.actors) {
-                    if (actor.getActorName().equals(inputActor)) {
-                        return true ;
+                .filter(x -> {
+                    for (Actor actor : x.actors) {
+                        if (actor.getActorName().equals(inputActor)) {
+                            return true;
+                        }
                     }
-                } return false;})
+                    return false;
+                })
                 .collect(Collectors.toList());
 
         filteredMovieList
@@ -193,7 +200,8 @@ public class Movies {
                 .collect(Collectors.toList());
 
         filteredMovieList
-                .forEach(x -> System.out.println("Movies " + x.title + " is in genre " + inputGenre));
+                .forEach(x -> System.out.println("Movies " + x.title
+                        + " is in genre " + inputGenre));
 
         return filteredMovieList;
     }
@@ -203,12 +211,14 @@ public class Movies {
         for (int i = 0; i < 4; i++) {
             moviesList.add(new Movies());
         }
-        moviesList.get(0).fillDetails("src/main/java/space/harbour/java/hw7/BladeRunner.json");
-        moviesList.get(1).fillDetails("src/main/java/space/harbour/java/hw7/MysticRiver.json");
-        moviesList.get(2).fillDetails("src/main/java/space/harbour/java/hw7/StayDown.json");
-        moviesList.get(3).fillDetails("src/main/java/space/harbour/java/hw7/TheShawshankRedemption.json");
-
-        Movies comparator = new Movies();
+        moviesList.get(0).fillDetails(
+                "src/main/java/space/harbour/java/hw7/BladeRunner.json");
+        moviesList.get(1).fillDetails(
+                "src/main/java/space/harbour/java/hw7/MysticRiver.json");
+        moviesList.get(2).fillDetails(
+                "src/main/java/space/harbour/java/hw7/StayDown.json");
+        moviesList.get(3).fillDetails(
+                "src/main/java/space/harbour/java/hw7/TheShawshankRedemption.json");
 
         // Before sorting
         System.out.println("Before sorting: ");
@@ -218,6 +228,8 @@ public class Movies {
                 + x.runtime + ", Awards (length): "
                 + x.awards.length()));
         System.out.println("\n");
+
+        Movies comparator = new Movies();
 
         // Sorting by release year
         comparator.sortByReleaseYear(moviesList);
