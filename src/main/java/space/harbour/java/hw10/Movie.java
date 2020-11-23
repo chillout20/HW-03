@@ -1,8 +1,8 @@
 package space.harbour.java.hw10;
 
-import java.io.FileNotFoundException;
 import com.mongodb.BasicDBObject;
 import com.mongodb.Function;
+import java.io.FileNotFoundException;
 import org.bson.Document;
 
 public class Movie {
@@ -17,7 +17,7 @@ public class Movie {
 
         // Find
         BasicDBObject searchQuery = new BasicDBObject();
-        searchQuery.append("genre","drama");
+        searchQuery.append("genre", "drama");
         Function<Document, String> handler = document -> String.valueOf(document);
 
         executor.execFindOne("java", "movies", searchQuery, handler);
