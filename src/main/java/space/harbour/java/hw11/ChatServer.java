@@ -2,10 +2,8 @@ package space.harbour.java.hw11;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 public class ChatServer {
     private Set<ChatHandler> chats = ConcurrentHashMap.newKeySet();
@@ -25,7 +23,7 @@ public class ChatServer {
 
     public synchronized void broadcast(String message) {
         System.out.println("New message -> " + message);
-        for (ChatHandler chat: chats) {
+        for (ChatHandler chat : chats) {
             chat.sendMessage(message);
         }
     }
