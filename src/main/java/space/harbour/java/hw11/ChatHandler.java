@@ -11,9 +11,9 @@ import org.bson.Document;
 
 public class ChatHandler extends Thread {
     private final ChatServer server;
-    private final Socket client;
+    public final Socket client;
     public String name;
-    private PrintWriter out;
+    public static PrintWriter out;
 
 
     public ChatHandler(ChatServer server, Socket client) {
@@ -23,13 +23,14 @@ public class ChatHandler extends Thread {
 
     public void run() {
         MongoExecutorChat executor = new MongoExecutorChat();
-        executor.execRetrieveChatHistory();
 
         try {
             out = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        executor.execRetrieveChatHistory(out);
 
         try (BufferedReader in = new BufferedReader(
                 new InputStreamReader(client.getInputStream()))) {
