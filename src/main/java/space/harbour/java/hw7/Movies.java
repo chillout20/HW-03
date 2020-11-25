@@ -14,50 +14,53 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 
 public class Movies {
-    String title;
-    Integer year;
-    String released;
-    Integer runtime;
-    String[] genres;
-    Director director;
+    Object _id;
+    String Title;
+    Integer Year;
+    String Released;
+    Integer Runtime;
+    String[] Genres;
+    Director Director;
 
     public static class Director {
-        String name;
+        String Name;
     }
 
-    Writer[] writers;
+    Writer[] Writers;
 
     public static class Writer {
-        String name;
-        String type;
+        String Name;
+        String Type;
+
     }
 
-    Actor[] actors;
+    Actor[] Actors;
 
     public static class Actor {
-        String name;
-        String as;
+        String Name;
+        String As;
 
         public String getActorName() {
-            return this.name;
+            return this.Name;
         }
     }
 
-    String plot;
-    String[] languages;
-    String[] countries;
-    String awards;
-    String poster;
-    Rating[] ratings;
+    String Plot;
+    String[] Languages;
+    String[] Countries;
+    String Awards;
+    String Poster;
+    Rating[] Ratings;
 
     public static class Rating {
-        String source;
-        String value;
-        Integer votes;
+        String Source;
+        String Value;
+        Integer Votes;
     }
 
     public void fillDetails(String filename)
             throws FileNotFoundException {
+
         // Read the file
         InputStream fis = new FileInputStream(filename);
         JsonReader jsonReader = Json.createReader(fis);
@@ -65,110 +68,110 @@ public class Movies {
         jsonReader.close();
 
         // Title, year, released, runtime
-        this.title = object.getString("Title");
-        this.year = object.getInt("Year");
-        this.released = object.getString("Released");
-        this.runtime = object.getInt("Runtime");
+        this.Title = object.getString("Title");
+        this.Year = object.getInt("Year");
+        this.Released = object.getString("Released");
+        this.Runtime = object.getInt("Runtime");
 
         // Genres
         JsonArray genresArray = object.getJsonArray("Genres");
-        this.genres = new String[genresArray.size()];
+        this.Genres = new String[genresArray.size()];
         for (int i = 0; i < genresArray.size(); i++) {
-            this.genres[i] = genresArray.getString(i);
+            this.Genres[i] = genresArray.getString(i);
         }
 
         // Director
         JsonObject director = object.getJsonObject("Director");
-        this.director = new Director();
-        this.director.name = director.getString("Name");
+        this.Director = new Director();
+        this.Director.Name = director.getString("Name");
 
         // Writers
         JsonArray writerArray = object.getJsonArray("Writers");
-        this.writers = new Writer[writerArray.size()];
+        this.Writers = new Writer[writerArray.size()];
         for (int i = 0; i < writerArray.size(); i++) {
-            this.writers[i] = new Writer();
-            this.writers[i].name = writerArray.getJsonObject(i).getString("Name");
-            this.writers[i].type = writerArray.getJsonObject(i).getString("Type");
+            this.Writers[i] = new Writer();
+            this.Writers[i].Name = writerArray.getJsonObject(i).getString("Name");
+            this.Writers[i].Type = writerArray.getJsonObject(i).getString("Type");
         }
 
         // Actors
         JsonArray actorArray = object.getJsonArray("Actors");
-        this.actors = new Actor[actorArray.size()];
+        this.Actors = new Actor[actorArray.size()];
         for (int i = 0; i < actorArray.size(); i++) {
-            this.actors[i] = new Actor();
-            this.actors[i].name = actorArray.getJsonObject(i).getString("Name");
-            this.actors[i].as = actorArray.getJsonObject(i).getString("As");
+            this.Actors[i] = new Actor();
+            this.Actors[i].Name = actorArray.getJsonObject(i).getString("Name");
+            this.Actors[i].As = actorArray.getJsonObject(i).getString("As");
         }
 
         // Plot
-        this.plot = object.getString("Plot");
+        this.Plot = object.getString("Plot");
 
         // Languages
         JsonArray languagesArray = object.getJsonArray("Languages");
-        this.languages = new String[languagesArray.size()];
+        this.Languages = new String[languagesArray.size()];
         for (int i = 0; i < languagesArray.size(); i++) {
-            this.languages[i] = languagesArray.getString(i);
+            this.Languages[i] = languagesArray.getString(i);
         }
 
         // Countries
         JsonArray countriesArray = object.getJsonArray("Countries");
-        this.countries = new String[countriesArray.size()];
+        this.Countries = new String[countriesArray.size()];
         for (int i = 0; i < countriesArray.size(); i++) {
-            this.countries[i] = countriesArray.getString(i);
+            this.Countries[i] = countriesArray.getString(i);
         }
 
         // Awards, poster
-        this.awards = object.getString("Awards");
-        this.poster = object.getString("Poster");
+        this.Awards = object.getString("Awards");
+        this.Poster = object.getString("Poster");
 
         // Ratings
         JsonArray ratingArray = object.getJsonArray("Ratings");
-        this.ratings = new Rating[ratingArray.size()];
+        this.Ratings = new Rating[ratingArray.size()];
         for (int i = 0; i < ratingArray.size(); i++) {
-            this.ratings[i] = new Rating();
-            this.ratings[i].source = ratingArray.getJsonObject(i).getString("Source");
-            this.ratings[i].value = ratingArray.getJsonObject(i).getString("Value");
+            this.Ratings[i] = new Rating();
+            this.Ratings[i].Source = ratingArray.getJsonObject(i).getString("Source");
+            this.Ratings[i].Value = ratingArray.getJsonObject(i).getString("Value");
 
             try {
-                this.ratings[i].votes = ratingArray.getJsonObject(i).getInt("Votes");
+                this.Ratings[i].Votes = ratingArray.getJsonObject(i).getInt("Votes");
             } catch (NullPointerException e) {
-                this.ratings[i].votes = null;
+                this.Ratings[i].Votes = null;
             }
         }
     }
 
     public List<Movies> sortByReleaseYear(List<Movies> moviesList) {
         System.out.println("Sorting by release year:");
-        moviesList.sort(Comparator.comparingInt((Movies o) -> o.year));
-        moviesList.forEach(x -> System.out.println("Title: " + x.title + ", Released: " + x.year));
+        moviesList.sort(Comparator.comparingInt((Movies o) -> o.Year));
+        moviesList.forEach(x -> System.out.println("Title: " + x.Title + ", Released: " + x.Year));
         return moviesList;
     }
 
     public List<Movies> sortByRuntime(List<Movies> moviesList) {
         System.out.println("Sorting by runtime:");
-        moviesList.sort(Comparator.comparingInt((Movies o) -> o.runtime));
-        moviesList.forEach(x -> System.out.println("Title: " + x.title
-                + ", Runtime: " + x.runtime));
+        moviesList.sort(Comparator.comparingInt((Movies o) -> o.Runtime));
+        moviesList.forEach(x -> System.out.println("Title: " + x.Title
+                + ", Runtime: " + x.Runtime));
         return moviesList;
     }
 
     public List<Movies> sortByAward(List<Movies> moviesList) {
         System.out.println("Sorting by length of award:");
-        moviesList.sort(Comparator.comparingInt((Movies o) -> o.awards.length()));
-        moviesList.forEach(x -> System.out.println("Title: " + x.title
-                + ", Award (length): " + x.awards.length()));
+        moviesList.sort(Comparator.comparingInt((Movies o) -> o.Awards.length()));
+        moviesList.forEach(x -> System.out.println("Title: " + x.Title
+                + ", Award (length): " + x.Awards.length()));
         return moviesList;
     }
 
     public List<Movies> filterByDirector(List<Movies> movieList, String inputDirector) {
         System.out.println("Filtering movies by director " + inputDirector + ":");
         List<Movies> filteredMovieList = movieList.stream()
-                .filter(x -> x.director.name.equals(inputDirector))
+                .filter(x -> x.Director.Name.equals(inputDirector))
                 .collect(Collectors.toList());
 
         filteredMovieList
-                .forEach(x -> System.out.println("Title: " + x.title
-                        + ", Director: " + x.director.name));
+                .forEach(x -> System.out.println("Title: " + x.Title
+                        + ", Director: " + x.Director.Name));
         return filteredMovieList;
 
     }
@@ -177,7 +180,7 @@ public class Movies {
         System.out.println("Filtering movies with actor " + inputActor + ":");
         List<Movies> filteredMovieList = movieList.stream()
                 .filter(x -> {
-                    for (Actor actor : x.actors) {
+                    for (Actor actor : x.Actors) {
                         if (actor.getActorName().equals(inputActor)) {
                             return true;
                         }
@@ -187,7 +190,7 @@ public class Movies {
                 .collect(Collectors.toList());
 
         filteredMovieList
-                .forEach(x -> System.out.println("Movie " + x.title + " has actor " + inputActor));
+                .forEach(x -> System.out.println("Movie " + x.Title + " has actor " + inputActor));
 
         return filteredMovieList;
 
@@ -196,11 +199,11 @@ public class Movies {
     public List<Movies> filterByGenre(List<Movies> movieList, String inputGenre) {
         System.out.println("Filtering movies by genre " + inputGenre + ":");
         List<Movies> filteredMovieList = movieList.stream()
-                .filter(x -> Arrays.asList(x.genres).contains(inputGenre))
+                .filter(x -> Arrays.asList(x.Genres).contains(inputGenre))
                 .collect(Collectors.toList());
 
         filteredMovieList
-                .forEach(x -> System.out.println("Movies " + x.title
+                .forEach(x -> System.out.println("Movies " + x.Title
                         + " is in genre " + inputGenre));
 
         return filteredMovieList;
@@ -223,10 +226,10 @@ public class Movies {
         // Before sorting
         System.out.println("Before sorting: ");
         moviesList.forEach(x -> System.out.println(
-                x.title + ", Released year: "
-                + x.year + ", Runtime: "
-                + x.runtime + ", Awards (length): "
-                + x.awards.length()));
+                x.Title + ", Released year: "
+                + x.Year + ", Runtime: "
+                + x.Runtime + ", Awards (length): "
+                + x.Awards.length()));
         System.out.println("\n");
 
         Movies comparator = new Movies();
@@ -254,6 +257,38 @@ public class Movies {
         // Filter by genre
         comparator.filterByGenre(moviesList, "Drama");
         System.out.println("\n");
+    }
+
+    public String getTitle() {
+        return Title;
+    }
+
+    public int getYear() {
+        return Year;
+    }
+
+    public String getDirector() {
+        return Director.Name;
+    }
+
+    public String getPoster() {
+        return Poster;
+    }
+
+    public Actor[] getActors() {
+        return Actors;
+    }
+
+    public String getPlot() {
+        return Plot;
+    }
+
+    public Integer getRuntime() {
+        return Runtime;
+    }
+
+    public String getAwards() {
+        return Awards;
     }
 }
 
