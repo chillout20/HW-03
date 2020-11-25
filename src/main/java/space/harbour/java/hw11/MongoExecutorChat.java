@@ -39,7 +39,7 @@ public class MongoExecutorChat {
         while (iterator.hasNext()) {
             Document message = iterator.next();
             out.println(message.getString("name")
-            + " said: " + message.getString("message"));
+                    + " said: " + message.getString("message"));
         }
     }
 

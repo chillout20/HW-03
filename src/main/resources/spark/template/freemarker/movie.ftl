@@ -13,6 +13,7 @@
             <p>Plot: ${movie.plot}</p>
             <p>Runtime: ${movie.runtime} minutes</p>
             <p>Award: ${movie.awards}</p>
+
         </section>
 
         <footer>Java Programming - Harbour.Space University</footer>

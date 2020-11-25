@@ -290,6 +290,22 @@ public class Movies {
     public String getAwards() {
         return Awards;
     }
+
+    public void setDirector(String name) {
+        Director.Name = name;
+    }
+
+    public void setTitle(String title) {
+        Title = title;
+    }
+
+    public void setYear(int year) {
+        Year = year;
+    }
+
+    public void setRuntime(int runtime) {
+        Runtime = runtime;
+    }
 }
 
 

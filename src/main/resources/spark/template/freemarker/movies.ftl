@@ -13,7 +13,9 @@
                 <p>Id: ${id}</p>
                 <p>Year: ${movie.year}</p>
                 <p>Director: ${movie.director}</p>
-                <a class="details" href=movies/${id}>Details</a><br>
+                <a class="details" href=movies/${id}>Details</a>
+                <br>
+                <br>
             </section>
         </#list>
 

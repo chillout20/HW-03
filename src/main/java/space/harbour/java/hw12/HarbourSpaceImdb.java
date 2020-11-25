@@ -7,11 +7,11 @@ import static spark.Spark.put;
 import static spark.Spark.staticFileLocation;
 
 import com.google.gson.Gson;
-
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import org.bson.Document;
 import org.eclipse.jetty.http.HttpStatus;
 import space.harbour.java.hw10.MongoExecutorMovies;
 import space.harbour.java.hw7.Movies;
@@ -20,17 +20,17 @@ import spark.Request;
 import spark.template.freemarker.FreeMarkerEngine;
 
 /**
- * A simple CRUD example showing how to create, get, update and delete book resources.
+ * A simple CRUD example showing how to create, get, update and delete movie resources.
  */
-public class HarbourSpaceIMDb {
+public class HarbourSpaceImdb {
 
     /**
-     * Map holding the books
+     * Map holding the moview.
      */
     private static Map<Integer, Movies> movies = new HashMap<>();
 
     public static void main(String[] args) throws FileNotFoundException {
-        // Let's add some books to the HashMap
+        // Let's add some movies to the HashMap
         // You shoud read them from the MongoDB
         MongoExecutorMovies executor = new MongoExecutorMovies();
 
@@ -41,25 +41,30 @@ public class HarbourSpaceIMDb {
 
         staticFileLocation("public");
 
-        // Creates a new book resource, will return the ID to the created resource
-        // author and title are sent in the post body as x-www-urlencoded values e.g. author=Foo&title=Bar
-        // you get them by using request.queryParams("valuename")
+        // Creates a new movie resource, will return the ID to the created resource
+        // author and title are sent in the post body
+        // as x-www-urlencoded values e.g. author=Foo&title=Bar
 
 
-        //post("/movies", (request, response) -> {
-        //    String author = request.queryParams("author");
-        //    String title = request.queryParams("title");
-        //    Integer pages = Integer.valueOf(request.queryParams("pages"));
-        //    Book book = new Book(author, title, pages);
-        //
-        //    int id = random.nextInt(Integer.MAX_VALUE);
-        //    movies.put(id, book);
-        //
-        //    response.status(HttpStatus.CREATED_201);
-        //    return id;
-        //});
+        post("/movies", (request, response) -> {
+            String director = request.queryParams("director");
+            String title = request.queryParams("title");
+            String year = request.queryParams("year");
+            String runtime = request.queryParams("runtime");
+            Movies movie = new Movies();
+            movie.setDirector(director);
+            movie.setTitle(title);
+            movie.setRuntime(Integer.parseInt(runtime));
+            movie.setYear(Integer.parseInt(year));
 
-        // Gets the book resource for the provided id
+            int id = random.nextInt(Integer.MAX_VALUE);
+            movies.put(id, movie);
+
+            response.status(HttpStatus.CREATED_201);
+            return id;
+        });
+
+        // Gets the movie resource for the provided id
         get("/movies/:id", (request, response) -> {
             Integer id = Integer.valueOf(request.params(":id"));
             Movies movie = movies.get(id);
@@ -71,61 +76,70 @@ public class HarbourSpaceIMDb {
                 Map<String, Object> movieMap = new HashMap<>();
                 movieMap.put("movie", movie);
                 return render(movieMap, "movie.ftl");
-            } else if (clientAcceptsJson(request))
+            } else if (clientAcceptsJson(request)) {
                 return gson.toJson(movie);
+            }
 
             return null;
         });
 
-        // Updates the book resource for the provided id with new information
-        // author and title are sent in the request body as x-www-urlencoded values e.g. author=Foo&title=Bar
-        // you get them by using request.queryParams("valuename")
+        // Updates the movie resource for the provided id with new information
 
-
-        //put("/movies/:id", (request, response) -> {
-        //    Integer id = Integer.valueOf(request.params(":id"));
-        //    Movies movie = movies.get(id);
-        //    if (movie == null) {
-        //        response.status(HttpStatus.NOT_FOUND_404);
-        //        return "Movie not found";
-        //    }
-        //    String newAuthor = request.queryParams("author");
-        //    String newTitle = request.queryParams("title");
-        //    String newPages = request.queryParams("pages");
-        //    if (newAuthor != null) {
-        //        book.setAuthor(newAuthor);
-        //    }
-        //    if (newTitle != null) {
-        //        book.setTitle(newTitle);
-        //    }
-        //    if (newPages != null) {
-        //        book.setPages(Integer.valueOf(newPages));
-        //    }
-        //    return "Book with id '" + id + "' updated";
-        //});
-
-
-
-        // Deletes the movie resource for the provided id
-        delete("/books/delete/:id", (request, response) -> {
+        put("/movies/:id", (request, response) -> {
             Integer id = Integer.valueOf(request.params(":id"));
-            Movies movie = movies.remove(id);
+            Movies movie = movies.get(id);
             if (movie == null) {
                 response.status(HttpStatus.NOT_FOUND_404);
                 return "Movie not found";
             }
-            return "Movie with id '" + id + "' deleted";
+            String newDirector = request.queryParams("director");
+            if (newDirector != null) {
+                movie.setDirector(newDirector);
+            }
+
+            String newTitle = request.queryParams("title");
+            if (newTitle != null) {
+                movie.setTitle(newTitle);
+            }
+
+            String newYear = request.queryParams("year");
+            if (newYear != null) {
+                movie.setYear(Integer.parseInt(newYear));
+            }
+
+            String newRuntime = request.queryParams("runtime");
+            if (newRuntime != null) {
+                movie.setRuntime(Integer.parseInt(newRuntime));
+            }
+
+            return "Movie " + movie.getTitle() + " with id '" + id + "' updated";
         });
 
-        // Gets all available book resources
+
+
+        // Deletes the movie resource for the provided id
+        delete("/movies/delete/:id", (request, response) -> {
+            Integer id = Integer.valueOf(request.params(":id"));
+            String title = movies.get(id).getTitle();
+            Movies movie = movies.remove(id);
+            Document filter = new Document().append("Title", title);
+            if (movie == null) {
+                response.status(HttpStatus.NOT_FOUND_404);
+                return "Movie not found";
+            }
+            executor.execDeleteMovie(filter);
+            return "Movie " + title + " with id '" + id + "' deleted";
+        });
+
+        // Gets all available movie resources
         get("/movies", (request, response) -> {
             if (clientAcceptsHtml(request)) {
                 Map<String, Object> moviesMap = new HashMap<>();
                 moviesMap.put("movies", movies);
                 return render(moviesMap, "movies.ftl");
-            } else if (clientAcceptsJson(request))
+            } else if (clientAcceptsJson(request)) {
                 return gson.toJson(movies);
-
+            }
             return null;
         });
     }

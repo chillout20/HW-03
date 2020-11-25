@@ -9,14 +9,11 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
-import org.bson.Document;
-import space.harbour.java.hw7.Movies;
-
-import javax.json.JsonObject;
 import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
+import org.bson.Document;
+import space.harbour.java.hw7.Movies;
 
 public class MongoExecutorMovies {
     MongoClient client;
